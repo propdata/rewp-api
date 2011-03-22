@@ -1,7 +1,7 @@
 Welcome to the Real Estate Website Package - Python API Library
 ===============================================================
 
-API Documentation: xxx
+API Documentation: http://rewp-api.readthedocs.org
 
 .. contents::
 
