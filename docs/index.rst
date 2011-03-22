@@ -11,6 +11,12 @@ Contents:
 .. toctree::
    :maxdepth: 2
 
+   overview
+   installing
+   modules_branches
+   modules_agents
+   modules_listings
+
 Indices and tables
 ==================
 
