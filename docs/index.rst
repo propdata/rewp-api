@@ -6,6 +6,13 @@
 Welcome to the Real Estate Website Package - Python API Library
 ===============----============================================
 
+.. note::
+   This documentation is not ready yet. This note will be removed as soon as
+   everything has been completed.
+
+This is the documentation for the Real Estate Website Package - Python API
+Library which can be found at: http://github.com/propdata/rewp-api
+
 Contents:
 
 .. toctree::
