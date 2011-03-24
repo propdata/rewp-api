@@ -4,7 +4,7 @@
    contain the root `toctree` directive.
 
 Welcome to the Real Estate Website Package - Python API Library
-===============----============================================
+===============================================================
 
 .. note::
    This documentation is not ready yet. This note will be removed as soon as
