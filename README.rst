@@ -23,5 +23,5 @@ This library includes a unittest suite, to run it simply do the following::
 Contact Us
 ----------
 
-If yyou have any trouble, or require any assistance, please e-mail us at
+If you have any trouble, or require any assistance, please e-mail us at
 support@propdata.net.
