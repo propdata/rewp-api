@@ -37,9 +37,9 @@ class Request(object):
         conn.close()
         return response
 
-    def execute(self):
+    def execute(self, method="GET", body={}):
         host, path, headers = self._build_request()
-        response = self._request_response(host, path, "GET", headers)
+        response = self._request_response(host, path, method, headers, body)
         
         if response == "Authorization Required":
             return None

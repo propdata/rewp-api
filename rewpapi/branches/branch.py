@@ -10,8 +10,7 @@ class RemoteBranch(Request):
     """
     def __init__(self, base_site, auth):
         super(RemoteBranch, self).__init__(auth)
-        #self.endpoint = base_site + "/api/branches/"
-        self.endpoint = base_site + "/api/listing-types/"
+        self.endpoint = base_site + "/api/branches/"
 
     def get_all(self):
         """
