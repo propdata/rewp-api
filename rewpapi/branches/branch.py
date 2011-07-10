@@ -1,43 +1,62 @@
-import httplib
+from rewpapi.common.http import Request
+
 import json
-import base64
 import sys
 
 
-USERNAME = "myusername"
-PASSWORD = "mypassword"
-TOKEN = "abcd1234-4321-1234-abcd-123456789101"
+class RemoteBranch(Request):
+    """
+    This object provides the remote interface to work with branches.
+    """
+    def __init__(self, base_site, auth):
+        super(RemoteBranch, self).__init__(auth)
+        #self.endpoint = base_site + "/api/branches/"
+        self.endpoint = base_site + "/api/listing-types/"
+
+    def get_all(self):
+        """
+        Returns a list of <Branch>'s
+        """
+        branches = self.execute()
+        if branches:
+            return branches
+        return None
+
+    def get(self, uuid):
+        """
+        Returns a single Branch instance, matching uuid.
+
+        Raises a DoesNotExist exception if the object does not exist.
+        """
+        b = Branch()
+        b.branch_name = "Foo"
+        return b
 
 
-def request_response(host, path, method, headers, body={}):
-    conn = httplib.HTTPConnection(host)
-    conn.request(method, path + "?token=%s" % TOKEN, body, headers)
-    res = conn.getresponse()
-    response = res.read()
-    conn.close()
-    return response
+class Branch(RemoteBranch):
+    """
+    A Branch object represents a Branch. Once instantiated, you can:
+     - Change its values and send an update()
+     - Delete it
+     - Create it if it doesn't exist
+    """
+    def update(self):
+        """
+        Update this branch.
+        """
+        pass
 
+    def delete(self):
+        """
+        Delete this branch.
+        """
+        pass
 
-def get_host_path(url):
-    url = url.replace('http://', '')
-
-    if '/' in url:
-        host, path = url.split('/', 1)
-        path = '/' + path
-    else:
-        host, path = url, '/'
-
-    return (host, path)
-
-
-def build_request(url):
-    host, path = get_host_path(url)
-    headers = {'Accept': '*/*', 'Host': host}
-    auth = '%s:%s' % (USERNAME, PASSWORD)
-    auth = 'Basic %s' % base64.encodestring(auth)
-    auth = auth.strip()
-    headers.update({'Authorization': auth})
-    return (host, path, headers)
+    def create(self):
+        """
+        Create a new branch.
+        """
+        pass
 
 
 def run(branch_uuid=None):
@@ -57,7 +76,22 @@ def run(branch_uuid=None):
 
 
 if __name__ == "__main__":
-    if len(sys.argv) > 1:
-        run(sys.argv[-1])
-    else:
-        run()
+    b = RemoteBranch()
+
+    print "Current Branches:"
+    branches = b.get_all()
+    print branches
+
+    print "First Branch:"
+    branch = b.get(branches[0].uuid)
+    print branch # This is an <object 'Branch'>
+
+    print "Update First Branch:"
+    branch.branch_name = "Foo"
+    print branch.update()
+
+    print "Create a new Branch"
+    b = Branch()
+    b.branch_name = "Foo bar"
+    b.create()
+
