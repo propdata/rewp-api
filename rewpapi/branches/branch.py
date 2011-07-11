@@ -10,14 +10,24 @@ class RemoteBranch(Request):
     """
     def __init__(self, base_site, auth):
         super(RemoteBranch, self).__init__(auth)
-        self.endpoint = base_site + "/api/branches/"
+        self._base_site = base_site
+        self._auth = auth
+        self._endpoint = base_site + "/api/branches/"
 
     def get_all(self):
         """
         Returns a list of <Branch>'s
         """
-        branches = self.execute()
-        if branches:
+        remote_branches = self.execute()
+        branches = []
+        if remote_branches:
+            for b in remote_branches:
+                new_branch = Branch(self._base_site, self._auth)
+                new_branch.FIELDS = []
+                for k, v in b.items():
+                    setattr(new_branch, k, v)
+                    new_branch.FIELDS.append(k)
+                branches.append(new_branch)
             return branches
         return None
 
@@ -39,11 +49,20 @@ class Branch(RemoteBranch):
      - Delete it
      - Create it if it doesn't exist
     """
+    def _set_fields(self, branch_object):
+        self.FIELDS = branch_object.FIELDS
+        for field in branch_object.FIELDS:
+            setattr(self, field, getattr(branch_object, field))
+
     def update(self):
         """
         Update this branch.
         """
-        pass
+        self._endpoint = self._base_site + "/api/branches/%s/" % self.uuid
+        branch_dict = {}
+        for a in self.FIELDS:
+            branch_dict[a] = getattr(self, a)
+        self.execute("PUT", branch_dict)
 
     def delete(self):
         """
@@ -55,42 +74,8 @@ class Branch(RemoteBranch):
         """
         Create a new branch.
         """
-        pass
-
-
-def run(branch_uuid=None):
-    url = "http://www.yoursite.co.za/api/branches/"
-    if branch_uuid:
-        url += "%s/" % branch_uuid
-    host, path, headers = build_request(url)
-    response = request_response(host, path, "GET", headers)
-
-    if branch_uuid:
-        branch = json.loads(response)
-        print branch['branch_manager']
-    else:
-        branches = json.loads(response)
-        for branch in branches:
-            print branch['branch_name'], branch['uuid']
-
-
-if __name__ == "__main__":
-    b = RemoteBranch()
-
-    print "Current Branches:"
-    branches = b.get_all()
-    print branches
-
-    print "First Branch:"
-    branch = b.get(branches[0].uuid)
-    print branch # This is an <object 'Branch'>
-
-    print "Update First Branch:"
-    branch.branch_name = "Foo"
-    print branch.update()
-
-    print "Create a new Branch"
-    b = Branch()
-    b.branch_name = "Foo bar"
-    b.create()
-
+        self._endpoint = self._base_site + "/api/branches/"
+        branch_dict = {}
+        for a in self.FIELDS:
+            branch_dict[a] = getattr(self, a)
+        self.execute("POST", branch_dict)

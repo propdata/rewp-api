@@ -1,63 +1,85 @@
-import httplib
+from rewpapi.common.http import Request
+
 import json
-import base64
 import sys
 
 
-USERNAME = "myusername"
-PASSWORD = "mypassword"
-TOKEN = "abcd1234-4321-1234-abcd-123456789101"
+class RemoteAgent(Request):
+    """
+    This object provides the remote interface to work with agents.
+    """
+    def __init__(self, base_site, auth):
+        super(RemoteAgent, self).__init__(auth)
+        self._base_site = base_site
+        self._auth = auth
+        self._endpoint = base_site + "/api/agents/"
+
+    def get_all(self):
+        """
+        Returns a list of agents
+        """
+        remote_agents = self.execute()
+        agents = []
+        if remote_agents:
+            for a in remote_agents:
+                new_agent = Agent(self._base_site, self._auth)
+                new_agent.FIELDS = []
+                for k, v in a.items():
+                    setattr(new_agent, k, v)
+                    new_agent.FIELDS.append(k)
+                agents.append(new_agent)
+            return agents
+        return None
+
+    def get(self, uuid):
+        """
+        Returns a single Agent instance, matching uuid.
+
+        Raises a DoesNotExist exception if the object does not exist.
+        """
+        b = Agent()
+        b.branch_name = "Foo"
+        return b
 
 
-def request_response(host, path, method, headers, body={}):
-    conn = httplib.HTTPConnection(host)
-    conn.request(method, path + "?token=%s" % TOKEN, body, headers)
-    res = conn.getresponse()
-    response = res.read()
-    conn.close()
-    return response
+class Agent(RemoteAgent):
+    """
+    An Agent object represents an Agent. Once instantiated, you can:
+     - Change its values and send an update()
+     - Delete it
+     - Create it if it doesn't exist
+    """
+    def _set_fields(self, agent_object):
+        self.FIELDS = agent_object.FIELDS
+        for field in agent_object.FIELDS:
+            setattr(self, field, getattr(agent_object, field))
 
+    def update(self):
+        """
+        Update this agent.
+        """
+        self._endpoint = self._base_site + "/api/agents/%s/" % self.uuid
+        agent_dict = {}
+        for a in self.FIELDS:
+            agent_dict[a] = getattr(self, a)
+        agent_dict['branch_name'] = agent_dict['branch']['branch_name']
+        del agent_dict['branch']
+        self.execute("PUT", agent_dict)
 
-def get_host_path(url):
-    url = url.replace('http://', '')
+    def delete(self):
+        """
+        Delete this branch.
+        """
+        pass
 
-    if '/' in url:
-        host, path = url.split('/', 1)
-        path = '/' + path
-    else:
-        host, path = url, '/'
-
-    return (host, path)
-
-
-def build_request(url):
-    host, path = get_host_path(url)
-    headers = {'Accept': '*/*', 'Host': host}
-    auth = '%s:%s' % (USERNAME, PASSWORD)
-    auth = 'Basic %s' % base64.encodestring(auth)
-    auth = auth.strip()
-    headers.update({'Authorization': auth})
-    return (host, path, headers)
-
-
-def run(branch_uuid=None):
-    url = "http://www.yoursite.co.za/api/branches/"
-    if branch_uuid:
-        url += "%s/" % branch_uuid
-    host, path, headers = build_request(url)
-    response = request_response(host, path, "GET", headers)
-
-    if branch_uuid:
-        branch = json.loads(response)
-        print branch['branch_manager']
-    else:
-        branches = json.loads(response)
-        for branch in branches:
-            print branch['branch_name'], branch['uuid']
-
-
-if __name__ == "__main__":
-    if len(sys.argv) > 1:
-        run(sys.argv[-1])
-    else:
-        run()
+    def create(self):
+        """
+        Create a new agent.
+        """
+        self._endpoint = self._base_site + "/api/agents/"
+        agent_dict = {}
+        for a in self.FIELDS:
+            agent_dict[a] = getattr(self, a)
+        agent_dict['branch_name'] = agent_dict['branch']['branch_name']
+        del agent_dict['branch']
+        self.execute("POST", agent_dict)

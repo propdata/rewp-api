@@ -10,13 +10,13 @@ class Data(Request):
     """
     def __init__(self, base_site, auth):
         super(Data, self).__init__(auth)
-        self.base_site = base_site
+        self._base_site = base_site
 
     def get_listing_types(self):
         """
         Returns a list of possible Listing Types.
         """
-        self.endpoint = self.base_site + "/api/listing-types/"
+        self._endpoint = self._base_site + "/api/listing-types/"
         listing_types = self.execute()
         if listing_types:
             return listing_types
@@ -26,7 +26,7 @@ class Data(Request):
         """
         Returns a list of possible Property Types for a specific Listing Type.
         """
-        self.endpoint = "%s/api/property-types/%s/" % (self.base_site,
+        self._endpoint = "%s/api/property-types/%s/" % (self.base_site,
                 listing_type_slug)
         property_types = self.execute()
         if property_types:
