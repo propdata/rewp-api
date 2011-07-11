@@ -17,7 +17,7 @@ Testing
 
 This library includes a unittest suite, to run it simply do the following::
 
-   xxx
+   ./run_tests.py
 
 
 Contact Us
