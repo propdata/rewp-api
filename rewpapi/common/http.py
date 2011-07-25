@@ -50,9 +50,9 @@ class Request(object):
         if response == "Authorization Required":
             return None
 
-        if response == "Bad Request":
-            logging.warning("Bad Request")
-        
+        if response.startswith("Bad Request"):
+            logging.warning(str(response))
+            
         try:
             return json.loads(response)
         except ValueError:

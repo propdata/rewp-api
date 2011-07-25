@@ -49,7 +49,7 @@ class Agent(RemoteAgent):
      - Delete it
      - Create it if it doesn't exist
     """
-    def _set_fields(self, agent_object):
+    def set_fields(self, agent_object):
         self.FIELDS = agent_object.FIELDS
         for field in agent_object.FIELDS:
             setattr(self, field, getattr(agent_object, field))

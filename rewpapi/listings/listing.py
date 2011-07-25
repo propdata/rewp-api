@@ -46,7 +46,7 @@ class ListingResidential(RemoteListingResidential):
      - Delete it
      - Create it if it doesn't exist
     """
-    def _set_fields(self, listing_object):
+    def set_fields(self, listing_object):
         self.FIELDS = listing_object.FIELDS
         for field in listing_object.FIELDS:
             setattr(self, field, getattr(listing_object, field))
@@ -59,10 +59,9 @@ class ListingResidential(RemoteListingResidential):
         listing_dict = {}
         for a in self.FIELDS:
             listing_dict[a] = getattr(self, a)
-        listing_dict['agent_uuid'] = listing_dict['agent']['uuid']
         listing_dict['country'] = listing_dict['location']['country']
         listing_dict['province'] = listing_dict['location']['province']
-        listing_dict['region'] = listing_dict['location']['region']
+        listing_dict['area'] = listing_dict['location']['region']
         listing_dict['suburb'] = listing_dict['location']['suburb']
         del listing_dict['agent']
         del listing_dict['location']
@@ -85,12 +84,13 @@ class ListingResidential(RemoteListingResidential):
         listing_dict = {}
         for a in self.FIELDS:
             listing_dict[a] = getattr(self, a)
-        listing_dict['agent_uuid'] = listing_dict['agent']['uuid']
         listing_dict['country'] = listing_dict['location']['country']
         listing_dict['province'] = listing_dict['location']['province']
-        listing_dict['region'] = listing_dict['location']['region']
+        listing_dict['area'] = listing_dict['location']['region']
         listing_dict['suburb'] = listing_dict['location']['suburb']
         del listing_dict['agent']
         del listing_dict['location']
-        print listing_dict
+        del listing_dict['website_url']
+        del listing_dict['images']
+        del listing_dict['floorplans']
         self.execute("POST", listing_dict)

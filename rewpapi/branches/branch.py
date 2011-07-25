@@ -49,7 +49,7 @@ class Branch(RemoteBranch):
      - Delete it
      - Create it if it doesn't exist
     """
-    def _set_fields(self, branch_object):
+    def set_fields(self, branch_object):
         self.FIELDS = branch_object.FIELDS
         for field in branch_object.FIELDS:
             setattr(self, field, getattr(branch_object, field))
