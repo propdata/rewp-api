@@ -26,11 +26,13 @@ else:
     # for Python 3.0 compatibility
     class_types = type
 
+
 def _CmpToKey(mycmp):
     'Convert a cmp= function into a key= function'
     class K(object):
         def __init__(self, obj):
             self.obj = obj
+
         def __lt__(self, other):
             return mycmp(self.obj, other.obj) == -1
     return K
@@ -56,8 +58,10 @@ def _make_failed_import_test(name, suiteClass):
     return _make_failed_test('ModuleImportFailure', name, ImportError(message),
                              suiteClass)
 
+
 def _make_failed_load_tests(name, exception, suiteClass):
     return _make_failed_test('LoadTestsFailure', name, exception, suiteClass)
+
 
 def _make_failed_test(classname, methodname, exception, suiteClass):
     def testFailure(self):
@@ -65,6 +69,7 @@ def _make_failed_test(classname, methodname, exception, suiteClass):
     attrs = {methodname: testFailure}
     TestClass = type(classname, (unittest.TestCase,), attrs)
     return suiteClass((TestClass(methodname),))
+
 
 try:
     cmp
@@ -269,7 +274,7 @@ class DiscoveringTestLoader(unittest.TestLoader):
     def _match_path(self, path, full_path, pattern):
         # override this method to use alternative matching strategy
         return fnmatch(path, pattern)
-    
+
     def _find_tests(self, start_dir, pattern):
         """Used by discovery. Yields test suites it loads."""
         paths = os.listdir(start_dir)
@@ -339,7 +344,7 @@ if not hasattr(os.path, 'relpath'):
     if os.path is sys.modules.get('ntpath'):
         def relpath(path, start=os.path.curdir):
             """Return a relative version of a path"""
-        
+
             if not path:
                 raise ValueError("no path specified")
             start_list = os.path.abspath(start).split(os.path.sep)
@@ -359,27 +364,27 @@ if not hasattr(os.path, 'relpath'):
                     break
             else:
                 i += 1
-        
-            rel_list = [os.path.pardir] * (len(start_list)-i) + path_list[i:]
+
+            rel_list = [os.path.pardir] * (len(start_list) - i) + path_list[i:]
             if not rel_list:
                 return os.path.curdir
             return os.path.join(*rel_list)
-    
+
     else:
         # default to posixpath definition
         def relpath(path, start=os.path.curdir):
             """Return a relative version of a path"""
-        
+
             if not path:
                 raise ValueError("no path specified")
-        
+
             start_list = os.path.abspath(start).split(os.path.sep)
             path_list = os.path.abspath(path).split(os.path.sep)
-        
+
             # Work out how much of the filepath is shared by start and path.
             i = len(os.path.commonprefix([start_list, path_list]))
-        
-            rel_list = [os.path.pardir] * (len(start_list)-i) + path_list[i:]
+
+            rel_list = [os.path.pardir] * (len(start_list) - i) + path_list[i:]
             if not rel_list:
                 return os.path.curdir
             return os.path.join(*rel_list)
@@ -402,6 +407,7 @@ Options:
 For test discovery all test modules must be importable from the top
 level directory of the project.
 """
+
 
 def _usage_exit(msg=None):
     if msg:
@@ -465,6 +471,7 @@ def main(argv=None, testRunner=None, testLoader=None, exit=True, verbosity=1):
     return _run_tests(tests, testRunner, verbosity, exit)
 
 defaultTestLoader = DiscoveringTestLoader()
+
 
 def collector():
     # import __main__ triggers code re-execution

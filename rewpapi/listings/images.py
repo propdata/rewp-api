@@ -1,8 +1,5 @@
 from rewpapi.common.http import Request
 
-import json
-import sys
-
 
 class RemoteListingImages(Request):
     def __init__(self, base_site, auth, listing_type, listing_uuid):
@@ -62,7 +59,7 @@ class ListingImages(RemoteListingImages):
         images = []
         for image in self.images:
             image_dict = {}
-            image_dict['image'] =  image.image
+            image_dict['image'] = image.image
             image_dict['caption'] = image.caption
             image_dict['sha1'] = image.sha1
             images.append(image_dict)

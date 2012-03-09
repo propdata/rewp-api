@@ -1,8 +1,5 @@
 from rewpapi.common.http import Request
 
-import json
-import sys
-
 
 class RemoteListingResidential(Request):
     def __init__(self, base_site, auth):

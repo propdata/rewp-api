@@ -2,7 +2,6 @@ import logging
 import httplib
 import json
 import base64
-import sys
 
 
 class Request(object):
@@ -52,7 +51,7 @@ class Request(object):
 
         if response.startswith("Bad Request"):
             logging.warning(str(response))
-            
+
         try:
             return json.loads(response)
         except ValueError:

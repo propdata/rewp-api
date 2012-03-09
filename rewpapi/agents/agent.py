@@ -1,8 +1,5 @@
 from rewpapi.common.http import Request
 
-import json
-import sys
-
 
 class RemoteAgent(Request):
     """
