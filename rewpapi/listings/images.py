@@ -1,4 +1,5 @@
 from rewpapi.common.http import Request
+from rewpapi.listings.listing import ListingResidential
 
 
 class RemoteListingImages(Request):
